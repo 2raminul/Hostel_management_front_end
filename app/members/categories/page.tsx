@@ -73,7 +73,7 @@ export default function Categories() {
     }
     return <>
         <AppContainer pageHeader="Caterories" topPanel={<div className="border-x-2 px-5 border-gray-300">
-            <div className="grid grid-cols-1 md:grid-cols-6 gap-4 py-5">
+            <div className="grid grid-cols-1 md:grid-cols-7 gap-4 py-5">
                 <div>
                     <AppButton
                         className="w-full"
