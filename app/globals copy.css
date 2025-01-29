@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@media (min-height: 769px) {
+  body {
+    overflow: hidden; /* Disable scrolling */
+    margin: 0; /* Remove margin to avoid scroll from the body */
+  }
+}
+@media (max-height: 768px) {
+  body {
+    overflow: auto !important;
+  }
+}

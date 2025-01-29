@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  brac_api_m_frontend:
+    build: .
+    ports:
+      - "3000:3000"
+    networks:
+      - brac_api_m_network
+networks:
+  brac_api_m_network:
+    external: true
+    name: brac_api_m_network
