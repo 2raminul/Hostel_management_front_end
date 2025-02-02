@@ -1,17 +1,8 @@
-import SettingsSuggestIcon from "@mui/icons-material/SettingsSuggest";
-import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
-import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
-import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import CategoryIcon from '@mui/icons-material/Category';
 import PaidIcon from '@mui/icons-material/Paid';
-import HandymanIcon from "@mui/icons-material/Handyman";
-import HowToRegIcon from "@mui/icons-material/HowToReg";
 import EuroIcon from '@mui/icons-material/Euro';
-import SavingsIcon from '@mui/icons-material/Savings';
 import InventoryIcon from '@mui/icons-material/Inventory';
-import SecurityIcon from "@mui/icons-material/Security";
-import TuneIcon from "@mui/icons-material/Tune";
 import { ReactNode } from "react";
 import { iconStyles } from "../ThemeRegistry/theme";
 import { ActionType } from "../types";
@@ -53,7 +44,7 @@ export const AppUserMenuOptions: MenuOptionType[] = [
     },
   },
   {
-    text: "Expense",
+    text: "Expenses",
     link: "/members/expenses",
     icon: <EuroIcon sx={{ ...iconStyles }} />,
     permission: {

@@ -98,13 +98,13 @@ export default function Login() {
               <AppButton
                 variant="contained"
                 type="submit"
+                startIcon={<LoginIcon />}
                 disabled={loginInProgress}
               >
-                Sign In{" "}
                 {loginInProgress ? (
                   <AppLoader small />
                 ) : (
-                  <LoginIcon fontSize="small" />
+                  "Sign In"
                 )}
               </AppButton>
             </div>

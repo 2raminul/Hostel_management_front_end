@@ -4,7 +4,8 @@ export const formatDate = (date: string | Date | undefined) => {
   return date
     ? format(
         typeof date == "string" ? new Date(date) : date,
-        "MMMM d, yyyy h:mm a"
+        //"MMMM d, yyyy h:mm a"
+        "MMMM d, yyyy"
       )
     : "";
 };
