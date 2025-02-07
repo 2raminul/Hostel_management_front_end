@@ -18,6 +18,7 @@ import { AppPerPage } from "@/app/components/AppPerPage";
 import { setCategoryPage, setCategoryPerPage } from "@/app/store/reducer/category/slice";
 import { AppDataCount } from "@/app/components/AppDataCount";
 import { AppPagination } from "@/app/components/AppPagination";
+import { AppTableFooter } from "@/app/components/AppTableFooter";
 
 const headers: TableHeader[] = [
     {
@@ -62,10 +63,17 @@ export default function Categories() {
         unit: c.unit,
         isInventoryItem: !!c.isInventoryItem ? BooleanType.TRUE : BooleanType.FALSE,
         actions: <>
-            <div className="mr-2"><AppButton variant="outlined" startIcon={<DeleteIcon />} onClick={() => {
-                setIdInAction(c.id);
-                setCategoryDeletePopupOpen(true);
-            }}>Delete</AppButton></div>
+            <div className="mr-2">
+                <AppButton
+                    variant="outlined"
+                    startIcon={<DeleteIcon />}
+                    onClick={() => {
+                        setIdInAction(c.id);
+                        setCategoryDeletePopupOpen(true);
+                    }}>
+                    Delete
+                </AppButton>
+            </div>
         </>
     }));
     const deleteCategory = (reason: string) => {
@@ -100,27 +108,29 @@ export default function Categories() {
                 isError={isCategoryListErr}
                 data={getTableData(categoryList?.data || [])}
             />
-            <div className="mt-2 flex flex-col md:flex-row justify-end items-center">
-                {!!categoryList?.count && categoryList.count > 0 && (<AppPerPage
-                    defaultValue={categoryFilter.perPage}
-                    handleChange={(e) => dispatch(setCategoryPerPage(+e.target.value))}
-                />)}
-                <AppDataCount
-                    total={categoryList?.count || 0}
-                    page={categoryFilter?.page || 1}
-                    isDataLoading={isCategoryListFetching || isCategoryListLoading}
-                    perPage={categoryFilter?.perPage || 10}
-                />
-                {!!categoryList && categoryList.count > 0 && (
-                    <AppPagination
-                        count={Math.ceil(
-                            categoryList.count / (categoryFilter?.perPage || 10)
-                        )}
-                        page={categoryFilter.page}
-                        onPageChange={(page: number) => dispatch(setCategoryPage(page))}
+            <AppTableFooter>
+                <>
+                    {!!categoryList?.count && categoryList.count > 0 && (<AppPerPage
+                        defaultValue={categoryFilter.perPage}
+                        handleChange={(e) => dispatch(setCategoryPerPage(+e.target.value))}
+                    />)}
+                    <AppDataCount
+                        total={categoryList?.count || 0}
+                        page={categoryFilter?.page || 1}
+                        isDataLoading={isCategoryListFetching || isCategoryListLoading}
+                        perPage={categoryFilter?.perPage || 10}
                     />
-                )}
-            </div>
+                    {!!categoryList && categoryList.count > 0 && (
+                        <AppPagination
+                            count={Math.ceil(
+                                categoryList.count / (categoryFilter?.perPage || 10)
+                            )}
+                            page={categoryFilter.page}
+                            onPageChange={(page: number) => dispatch(setCategoryPage(page))}
+                        />
+                    )}
+                </>
+            </AppTableFooter>
         </AppContainer>
         <AppConfirmation
             open={addCategoryPopupOpen}

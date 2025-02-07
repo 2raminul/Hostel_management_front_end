@@ -2,10 +2,15 @@ import { format } from "date-fns";
 
 export const formatDate = (date: string | Date | undefined) => {
   return date
+    ? format(typeof date == "string" ? new Date(date) : date, "MMMM d, yyyy")
+    : "";
+};
+
+export const formatDateTime = (date: string | Date | undefined) => {
+  return date
     ? format(
         typeof date == "string" ? new Date(date) : date,
-        //"MMMM d, yyyy h:mm a"
-        "MMMM d, yyyy"
+        "MMMM d, yyyy h:mm a"
       )
     : "";
 };

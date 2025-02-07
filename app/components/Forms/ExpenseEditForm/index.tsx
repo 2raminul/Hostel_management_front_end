@@ -1,11 +1,11 @@
-import { FC, useEffect } from "react";
+import { FC, useEffect, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import useSnackbar from "../../AppSnackbar/hooks/useSnackbar";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { expenseAddSchema } from "@/app/schema/form/expense";
+import { expenseEditSchema } from "@/app/schema/form/expense";
 import { AppSearchableDropdown } from "../../AppSearchableDropdown";
 import { useGetCategoryListQuery } from "@/app/store/reducer/category";
-import { useAddExpenseMutation, useGetBrandsQuery } from "@/app/store/reducer/expense";
+import { useEditExpenseMutation, useGetBrandsQuery, useGetExpenseDetailQuery } from "@/app/store/reducer/expense";
 import AppInputField from "../../AppInputField";
 import { AppOptionLabel } from "../../AppOptionLabel";
 import { AppDatePicker } from "../../AppDatePicker";
@@ -13,11 +13,13 @@ import AppButton from "../../AppButton";
 import { AppLoader } from "../../AppLoader";
 import { getErrorMessage } from "@/app/utils/helpers";
 
-export const ExpenseAddForm: FC<{ onSubmissionSuccess: () => void }> = ({ onSubmissionSuccess }) => {
+export const ExpenseEditForm: FC<{ expenseId: number; onSubmissionSuccess: () => void }> = ({ expenseId, onSubmissionSuccess }) => {
     const snackbar = useSnackbar();
     const { data: categoryList } = useGetCategoryListQuery({ page: 1, perPage: Number.MAX_SAFE_INTEGER });
     const { data: brandList } = useGetBrandsQuery();
-    const [handleAddExpense, { isLoading }] = useAddExpenseMutation();
+    const { data: expenseDetail, isLoading: isDetailLoading, isFetching: isDetailFetching, isError: isDetailError, isSuccess: isDetailSuccess } = useGetExpenseDetailQuery(expenseId, { refetchOnMountOrArgChange: true });
+    const [handleEditExpense, { isLoading }] = useEditExpenseMutation();
+    const [formPopulated, setFormPopulated] = useState(false);
     const {
         control,
         handleSubmit,
@@ -30,17 +32,18 @@ export const ExpenseAddForm: FC<{ onSubmissionSuccess: () => void }> = ({ onSubm
             expenseDate: new Date()
         },
         mode: "onChange",
-        resolver: yupResolver(expenseAddSchema),
+        resolver: yupResolver(expenseEditSchema),
     });
-
+    const brandVal = useWatch({ control, name: "brand" })
     const quantityVal = useWatch({ control, name: "quantity" });
     const unitPriceVal = useWatch({ control, name: "unitPrice" });
     const expenseDateVal = useWatch({ control, name: "expenseDate" });
     const onSubmit = async (data: any) => {
-        handleAddExpense(data)
+        data.id = expenseId;
+        handleEditExpense(data)
             .unwrap()
             .then(() => {
-                snackbar.success("Expense added successfully.");
+                snackbar.success("Expense updated successfully.");
                 onSubmissionSuccess();
             })
             .catch((err) => snackbar.error(getErrorMessage(err)));
@@ -50,37 +53,36 @@ export const ExpenseAddForm: FC<{ onSubmissionSuccess: () => void }> = ({ onSubm
         if (quantityVal && unitPriceVal) {
             setValue('totalPrice', quantityVal * unitPriceVal);
         }
-    }, [quantityVal, unitPriceVal])
+    }, [quantityVal, unitPriceVal]);
+
+    useEffect(() => {
+        if (!(isDetailLoading || isDetailFetching) && isDetailSuccess) {
+            setValue('brand', expenseDetail.brand);
+            setValue('remarks', expenseDetail.remarks || "");
+            setValue('quantity', expenseDetail.quantity);
+            setValue('unitPrice', expenseDetail.unitPrice);
+            setValue('totalPrice', expenseDetail.totalPrice);
+            setValue('expenseDate', new Date(expenseDetail.expenseDate));
+            setFormPopulated(true);
+        }
+    }, [isDetailLoading, isDetailFetching, isDetailSuccess])
 
     return <div className="w-96">
-        NOTE: Adding a new expense will add the bought items in inventory
-        <form onSubmit={handleSubmit(onSubmit)}>
+        {formPopulated ? <form onSubmit={handleSubmit(onSubmit)}>
             <div>
-                <AppSearchableDropdown
-                    labelText="Category"
-                    placeHolder="Select from dropdown"
-                    isRequired
-                    freeSolo={false}
-                    size="small"
-                    optionList={categoryList?.data?.map((c) => c.name) || []}
-                    onInputChange={(value) =>
-                        setValue(
-                            "categoryId",
-                            categoryList?.data?.find((c) => c.name === value)?.id || 0
-                        )
-                    }
-                    field=""
-                    error={errors?.categoryId?.message}
-                />
+                <AppOptionLabel text="Category" />
+                {expenseDetail?.categoryName}
             </div>
             <div>
                 <AppSearchableDropdown
                     labelText="Brand"
                     placeHolder="Type in or select"
+                    size="small"
                     isRequired
                     freeSolo={true}
                     optionList={brandList || []}
                     onInputChange={(value) => setValue("brand", value || "")}
+                    previousValue={brandVal}
                     field=""
                     error={errors?.brand?.message}
                 />
@@ -162,6 +164,6 @@ export const ExpenseAddForm: FC<{ onSubmissionSuccess: () => void }> = ({ onSubm
                 </AppButton>
 
             </div>
-        </form>
+        </form> : <AppLoader />}
     </div>
 }

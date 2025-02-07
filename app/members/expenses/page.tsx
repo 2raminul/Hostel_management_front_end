@@ -2,18 +2,22 @@
 
 import AppButton from "@/app/components/AppButton";
 import { AppContainer } from "@/app/components/AppContainer";
-import useSnackbar from "@/app/components/AppSnackbar/hooks/useSnackbar";
+import { AppDataCount } from "@/app/components/AppDataCount";
+import { AppPagination } from "@/app/components/AppPagination";
+import { AppPerPage } from "@/app/components/AppPerPage";
 import { AppTable } from "@/app/components/AppTable";
 import { ExpenseFilter } from "@/app/components/AppTableFilters/expenseFilter";
-import { ExpenseAddForm } from "@/app/components/Forms/ExpenseAddForm";
+import { AppTableFooter } from "@/app/components/AppTableFooter";
 import { TableHeader } from "@/app/components/types";
 import { useDispatch, useSelector } from "@/app/store/hooks";
-import { useGetExpenseListQuery } from "@/app/store/reducer/expense";
+import { setExpensePage, setExpensePerPage, useGetExpenseListQuery } from "@/app/store/reducer/expense";
 import { Expense } from "@/app/store/reducer/expense/types";
 import { formatDate } from "@/app/utils/date";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import dynamic from "next/dynamic";
 import { useState } from "react";
+import EditNoteIcon from '@mui/icons-material/EditNote';
+import HistoryIcon from '@mui/icons-material/History';
 
 const headers: TableHeader[] = [
     {
@@ -53,8 +57,10 @@ const headers: TableHeader[] = [
 
 export default function Expenses() {
     const dispatch = useDispatch();
-    const snackbar = useSnackbar();
     const [addExpensePopupOpen, setAddExpensePopupOpen] = useState(false);
+    const [editExpensePopupOpen, setEditExpensePopupOpen] = useState(false);
+    const [historyExpensePopupOpen, setHistoryExpensePopupOpen] = useState(false);
+    const [idInAction, setIdInAction] = useState<number | undefined>();
     const { expenseFilter } = useSelector(state => state.expense);
     const { data: expenseData, isLoading, isFetching, isError, isSuccess } = useGetExpenseListQuery({
         page: expenseFilter.page,
@@ -73,7 +79,26 @@ export default function Expenses() {
         unitPrice: ed.unitPrice,
         totalPrice: ed.totalPrice,
         expenseDate: formatDate(ed.expenseDate),
-        actions: <></>
+        actions: <>
+            <div className="float-start mr-2">
+                <AppButton
+                    startIcon={<EditNoteIcon />}
+                    variant="outlined"
+                    className="w-full md:w-24"
+                    onClick={() => { setIdInAction(ed.id); setEditExpensePopupOpen(true); }}>
+                    Edit
+                </AppButton>
+            </div>
+            <div className="float-start mr-2">
+                <AppButton
+                    startIcon={<HistoryIcon />}
+                    variant="outlined"
+                    className="w-full md:w-24"
+                    onClick={() => { setIdInAction(ed.id); setHistoryExpensePopupOpen(true); }}>
+                    History
+                </AppButton>
+            </div>
+        </>
     }))
 
     return <>
@@ -104,6 +129,29 @@ export default function Expenses() {
                 isError={isError}
                 data={getTableData(expenseData?.data || [])}
             />
+            <AppTableFooter>
+                <>
+                    {!!expenseData?.count && expenseData.count > 0 && (<AppPerPage
+                        defaultValue={expenseFilter.perPage}
+                        handleChange={(e) => dispatch(setExpensePerPage(+e.target.value))}
+                    />)}
+                    <AppDataCount
+                        total={expenseData?.count || 0}
+                        page={expenseFilter?.page || 1}
+                        isDataLoading={isFetching || isLoading}
+                        perPage={expenseFilter?.perPage || 10}
+                    />
+                    {!!expenseData && expenseData.count > 0 && (
+                        <AppPagination
+                            count={Math.ceil(
+                                expenseData.count / (expenseFilter?.perPage || 10)
+                            )}
+                            page={expenseFilter.page}
+                            onPageChange={(page: number) => dispatch(setExpensePage(page))}
+                        />
+                    )}
+                </>
+            </AppTableFooter>
         </AppContainer>
         <AppConfirmation
             open={addExpensePopupOpen}
@@ -115,7 +163,32 @@ export default function Expenses() {
             <ExpenseAddForm
                 onSubmissionSuccess={() => setAddExpensePopupOpen(false)} />
         </AppConfirmation>
+        <AppConfirmation
+            open={editExpensePopupOpen}
+            title="Edit Expense"
+            handleClose={() => setEditExpensePopupOpen(false)}
+            viewOnly
+            closeButtonHidden
+        >
+            {
+                idInAction && <ExpenseEditForm
+                    onSubmissionSuccess={() => setEditExpensePopupOpen(false)}
+                    expenseId={idInAction} />
+            }
+        </AppConfirmation>
+        <AppConfirmation
+            open={historyExpensePopupOpen}
+            title="Edit Expense"
+            handleClose={() => setHistoryExpensePopupOpen(false)}
+            viewOnly
+            closeButtonHidden
+        >
+            {idInAction && <ExpenseHistory expenseId={idInAction} />}
+        </AppConfirmation>
     </>
 }
 
 const AppConfirmation = dynamic(() => import("@/app/components/AppConfirmation").then((mod) => mod.AppConfirmation));
+const ExpenseAddForm = dynamic(() => import("@/app/components/Forms/ExpenseAddForm").then((mod) => mod.ExpenseAddForm));
+const ExpenseEditForm = dynamic(() => import("@/app/components/Forms/ExpenseEditForm").then((mod) => mod.ExpenseEditForm));
+const ExpenseHistory = dynamic(() => import("@/app/components/ExpenseHistory").then((mod) => mod.ExpenseHistory));

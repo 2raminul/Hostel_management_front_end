@@ -14,3 +14,15 @@ export const expenseAddSchema = yup.object({
   totalPrice: yup.number().required(),
   expenseDate: yup.date().required("Expense Date"),
 });
+
+export const expenseEditSchema = yup.object({
+  brand: yup.string().required(getRequiredMessage("Brand name")),
+  remarks: yup
+    .string()
+    .max(500, "Remarks cannot exceed 500 characters")
+    .required(getRequiredMessage("Remarks")),
+  quantity: yup.number().required(getRequiredMessage("Quantity")),
+  unitPrice: yup.number().required(getRequiredMessage("Unit price")),
+  totalPrice: yup.number().required(),
+  expenseDate: yup.date().required("Expense Date"),
+});

@@ -6,6 +6,17 @@ export type AddExpensePropsType = {
   remarks?: string | undefined;
   quantity: number;
   unitPrice: number;
+  totalPrice: number;
+  expenseDate: Date;
+};
+
+export type EditExpensePropsType = {
+  id: number;
+  brand: string;
+  remarks: string;
+  quantity: number;
+  unitPrice: number;
+  totalPrice: number;
   expenseDate: Date;
 };
 
@@ -26,9 +37,27 @@ export type Expense = {
   unitPrice: number;
   totalPrice: number;
   expenseDate: Date;
+  remarks?: string;
+};
+export type ExpenseHistoryType = {
+  id: number;
+  categoryName: string;
+  brand: string;
+  quantity: number;
+  unitPrice: number;
+  totalPrice: number;
+  expenseDate: Date;
+  remarks?: string;
+  updatedBy: string;
+  version: Date;
 };
 
 export type ExpenseQueryResponseType = {
   data: Expense[];
+  count: number;
+};
+
+export type ExpenseHistoryQueryResponseType = {
+  data: ExpenseHistoryType[];
   count: number;
 };
