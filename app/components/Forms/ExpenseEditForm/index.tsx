@@ -68,6 +68,7 @@ export const ExpenseEditForm: FC<{ expenseId: number; onSubmissionSuccess: () =>
     }, [isDetailLoading, isDetailFetching, isDetailSuccess])
 
     return <div className="w-96">
+        NOTE: Please do not forget to update the inventory if you are changing the quantity field.
         {formPopulated ? <form onSubmit={handleSubmit(onSubmit)}>
             <div>
                 <AppOptionLabel text="Category" />

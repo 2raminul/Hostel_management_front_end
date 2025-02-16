@@ -5,7 +5,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { expenseAddSchema } from "@/app/schema/form/expense";
 import { AppSearchableDropdown } from "../../AppSearchableDropdown";
 import { useGetCategoryListQuery } from "@/app/store/reducer/category";
-import { useAddExpenseMutation, useGetBrandsQuery } from "@/app/store/reducer/expense";
+import { useAddExpenseMutation } from "@/app/store/reducer/expense";
+import { useGetBrandsQuery } from "@/app/store/reducer/inventory";
 import AppInputField from "../../AppInputField";
 import { AppOptionLabel } from "../../AppOptionLabel";
 import { AppDatePicker } from "../../AppDatePicker";
@@ -79,6 +80,7 @@ export const ExpenseAddForm: FC<{ onSubmissionSuccess: () => void }> = ({ onSubm
                     placeHolder="Type in or select"
                     isRequired
                     freeSolo={true}
+                    size="small"
                     optionList={brandList || []}
                     onInputChange={(value) => setValue("brand", value || "")}
                     field=""

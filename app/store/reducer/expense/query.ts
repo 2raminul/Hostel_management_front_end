@@ -60,10 +60,7 @@ export const expenseApi = createApi({
       query: (id) => `/expense-history/${id}`,
       providesTags: ["expense-history"],
     }),
-    getBrands: builder.query<string[], void>({
-      query: () => "/brands",
-      providesTags: ["brand-list"],
-    }),
+
     getExpenseDetail: builder.query<Expense, number>({
       query: (id) => `/${id}`,
       providesTags: ["expense-detail"],
@@ -75,6 +72,5 @@ export const {
   useGetExpenseDetailQuery,
   useGetExpenseHistoryQuery,
   useEditExpenseMutation,
-  useGetBrandsQuery,
   useAddExpenseMutation,
 } = expenseApi;

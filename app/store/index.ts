@@ -10,8 +10,14 @@ import menuSlice from "./reducer/snackbar/menu/slice";
 import { categoryApi } from "./reducer/category";
 import { categorySlice } from "./reducer/category/slice";
 import { expenseApi, expenseSlice } from "./reducer/expense";
+import { inventoryApi } from "./reducer/inventory";
+import { inventorySlice } from "./reducer/inventory/slice";
 
-const middlewares = [categoryApi.middleware, expenseApi.middleware];
+const middlewares = [
+  categoryApi.middleware,
+  expenseApi.middleware,
+  inventoryApi.middleware,
+];
 
 const rootReducer = combineReducers({
   [snackbarSlice.name]: snackbarSlice.reducer,
@@ -20,6 +26,8 @@ const rootReducer = combineReducers({
   [categorySlice.name]: categorySlice.reducer,
   [expenseApi.reducerPath]: expenseApi.reducer,
   [expenseSlice.name]: expenseSlice.reducer,
+  [inventoryApi.reducerPath]: inventoryApi.reducer,
+  [inventorySlice.name]: inventorySlice.reducer,
 });
 
 export const store = configureStore({

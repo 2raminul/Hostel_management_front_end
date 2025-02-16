@@ -73,7 +73,7 @@ export default function Expenses() {
 
     const getTableData = (data: Expense[]) => data.map((ed) => Object.assign({
         id: ed.id,
-        caetgory: ed.categoryName,
+        category: ed.categoryName,
         brand: ed.brand,
         quantity: ed.quantity,
         unitPrice: ed.unitPrice,
@@ -178,7 +178,7 @@ export default function Expenses() {
         </AppConfirmation>
         <AppConfirmation
             open={historyExpensePopupOpen}
-            title="Edit Expense"
+            title="Expense History"
             handleClose={() => setHistoryExpensePopupOpen(false)}
             viewOnly
             closeButtonHidden

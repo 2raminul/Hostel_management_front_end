@@ -1,30 +1,27 @@
 import { useDispatch } from "@/app/store/hooks";
-import { setExpenseFilter } from "@/app/store/reducer/expense";
+import { useGetCategoryListQuery } from "@/app/store/reducer/category";
+import { useGetBrandsQuery } from "@/app/store/reducer/inventory";
+import { setInventoryFilter } from "@/app/store/reducer/inventory/slice";
 import { FC, useState } from "react";
 import { AppSearchableDropdown } from "../AppSearchableDropdown";
-import { useGetCategoryListQuery } from "@/app/store/reducer/category";
-import TuneIcon from "@mui/icons-material/Tune";
-import { AppDatePicker } from "../AppDatePicker";
 import AppButton from "../AppButton";
-import { useGetBrandsQuery } from "@/app/store/reducer/inventory";
+import TuneIcon from "@mui/icons-material/Tune";
 
-export const ExpenseFilter: FC = () => {
+export const InventoryFilter: FC = () => {
     const dispatch = useDispatch();
     const [categoryId, setCategoryId] = useState<number | undefined>();
     const [brand, setBrand] = useState('');
-    const [purchaseDateBefore, setPurchaseDateBefore] = useState<Date | undefined>();
-    const [purchaseDateAfter, setPurchaseDateAfter] = useState<Date | undefined>();
     const { data: brandList } = useGetBrandsQuery();
     const { data: categoryList } = useGetCategoryListQuery({ page: 1, perPage: Number.MAX_SAFE_INTEGER });
 
-    const applyFilter = () => {
-        dispatch(setExpenseFilter({ categoryId, brand, purchaseDateAfter, purchaseDateBefore }));
-    }
 
+    const applyFilter = () => {
+        dispatch(setInventoryFilter({ categoryId, brand }));
+    }
     return <>
-        <div className="md:border-l-2 md:border-gray grid grid-cols-1 md:grid-cols-3 gap-2">
-            <span className="md:text-end my-auto text-sm">Category Name:</span>
-            <div className="md:col-span-2">
+        <div className="md:border-l-2 md:border-gray grid grid-cols-1 md:grid-cols-6 gap-2">
+            <span className="md:col-span-3 md:text-end my-auto text-sm">Category Name:</span>
+            <div className="md:col-span-3">
                 <AppSearchableDropdown
                     labelText=""
                     size="small"
@@ -47,28 +44,6 @@ export const ExpenseFilter: FC = () => {
                     optionList={brandList || []}
                     onInputChange={(value) => setBrand(value || "")}
                     field=""
-                />
-            </div>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>Purchased After:</div>
-            <div className="md:col-span-2">
-                <AppDatePicker
-                    onSelectDate={(value) => value && setPurchaseDateAfter(value)}
-                    maxWidth={300}
-                    small
-                    notRemovable
-                />
-            </div>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>Purchased Before:</div>
-            <div className="md:col-span-2">
-                <AppDatePicker
-                    onSelectDate={(value) => value && setPurchaseDateBefore(value)}
-                    maxWidth={300}
-                    small
-                    notRemovable
                 />
             </div>
         </div>
