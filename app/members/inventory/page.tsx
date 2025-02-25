@@ -14,6 +14,7 @@ import { useGetInventoryListQuery } from "@/app/store/reducer/inventory";
 import { setInventoryPage, setInventoryPerPage } from "@/app/store/reducer/inventory/slice";
 import { InventoryItemData } from "@/app/store/reducer/inventory/types";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import dynamic from "next/dynamic";
 import { useState } from "react";
 
@@ -24,11 +25,11 @@ const headers: TableHeader[] = [
     },
     {
         label: "Category",
-        width: "10%",
+        width: "20%",
     },
     {
         label: "Brand",
-        width: "10%",
+        width: "20%",
     },
     {
         label: "In Stock",
@@ -40,7 +41,7 @@ const headers: TableHeader[] = [
     },
     {
         label: "Actions",
-        width: "50%",
+        width: "30%",
     },
 ];
 
@@ -57,7 +58,38 @@ export default function Inventory() {
         brand: inv.brand,
         inStock: inv.inStockCount,
         reusableCount: inv.reusableCount,
-        actions: <></>
+        actions: <div className="flex">
+            <div className="mr-2">
+                <AppButton
+                    className="w-32"
+                    startIcon={<RemoveCircleOutlineIcon />}
+                    onClick={() => setAddToInventoryOpen(true)}
+                    disabled={/*
+                    !!!userData?.permissions?.category?.[
+                      PermissionTypeEnum.CREATE
+                    ]
+                  */
+                        false}
+                >
+                    Use Items
+                </AppButton>
+            </div>
+            <div>
+                <AppButton
+                    className="w-32"
+                    startIcon={<RemoveCircleOutlineIcon />}
+                    onClick={() => setAddToInventoryOpen(true)}
+                    disabled={/*
+                    !!!userData?.permissions?.category?.[
+                      PermissionTypeEnum.CREATE
+                    ]
+                  */
+                        false}
+                >
+                    Sell Items
+                </AppButton>
+            </div>
+        </div>
     }));
     return <>
         <AppContainer pageHeader="Inventory Management" topPanel={<div className="border-x-2 px-5 border-gray-300">

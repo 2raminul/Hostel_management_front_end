@@ -2,7 +2,7 @@ import { FC } from "react";
 import useSnackbar from "../../AppSnackbar/hooks/useSnackbar";
 import { useGetCategoryListQuery } from "@/app/store/reducer/category";
 import { useGetBrandsQuery } from "@/app/store/reducer/inventory";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { inventoryItemAddSchema } from "@/app/schema/form/inventory";
 import { AppSearchableDropdown } from "../../AppSearchableDropdown";
@@ -10,10 +10,11 @@ import AppInputField from "../../AppInputField";
 import AppButton from "../../AppButton";
 import { AppLoader } from "../../AppLoader";
 import { useAddToIventoryMutation } from "@/app/store/reducer/inventory";
+import { getErrorMessage } from "@/app/utils/helpers";
 
 export const InventoryItemAddForm: FC<{ onSubmissionSuccess: () => void }> = ({ onSubmissionSuccess }) => {
     const snackbar = useSnackbar();
-    const { data: categoryList } = useGetCategoryListQuery({ page: 1, perPage: Number.MAX_SAFE_INTEGER });
+    const { data: categoryList } = useGetCategoryListQuery({ page: 1, perPage: Number.MAX_SAFE_INTEGER, isInventoryItem: 'true' });
     const { data: brandList } = useGetBrandsQuery();
     const [handleAddToInventory, { isLoading }] = useAddToIventoryMutation();
     const {
@@ -27,8 +28,16 @@ export const InventoryItemAddForm: FC<{ onSubmissionSuccess: () => void }> = ({ 
         mode: "onChange",
         resolver: yupResolver(inventoryItemAddSchema),
     });
-
-    const onSubmit = async (data: any) => { }
+    const categoryValue = useWatch({ control, name: "categoryId" })
+    const onSubmit = async (data: any) => {
+        handleAddToInventory(data)
+            .unwrap()
+            .then(() => {
+                snackbar.success("Items added to inventory successfully.");
+                onSubmissionSuccess();
+            })
+            .catch((err) => snackbar.error(getErrorMessage(err)));
+    }
 
     return <div className="w-96">
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -79,22 +88,25 @@ export const InventoryItemAddForm: FC<{ onSubmissionSuccess: () => void }> = ({ 
                     )}
                 />
             </div>
-            <div>
-                <Controller
-                    name="quantity"
-                    control={control}
-                    render={({ field }) => (
-                        <AppInputField
-                            labelText="Quantity"
-                            placeholder="Quantity"
-                            error={!!errors?.quantity?.message}
-                            errorText={errors?.quantity?.message}
-                            isRequired
-                            type="number"
-                            {...field}
-                        />
-                    )}
-                />
+            <div className="grid grid-cols-12 gap-4">
+                <div className="col-span-10">
+                    <Controller
+                        name="quantity"
+                        control={control}
+                        render={({ field }) => (
+                            <AppInputField
+                                labelText="Quantity"
+                                placeholder="Quantity"
+                                error={!!errors?.quantity?.message}
+                                errorText={errors?.quantity?.message}
+                                isRequired
+                                type="number"
+                                {...field}
+                            />
+                        )}
+                    />
+                </div>
+                {categoryValue > 0 && <div className="col-span-2 mt-16">{categoryList?.data?.find((c) => c.id == categoryValue)?.unit || ""}</div>}
             </div>
             <div className="pt-5 md:float-right">
                 <AppButton
