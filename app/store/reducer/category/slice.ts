@@ -8,6 +8,7 @@ type StorageType = {
     name?: string;
     reusable?: string;
     isInventoryItem?: string;
+    isSaleItem?: string;
     unit?: string;
   };
 };
@@ -30,6 +31,7 @@ export const categorySlice = createSlice({
       state.categoryFilter.name = action.payload.name;
       state.categoryFilter.reusable = action.payload.reusable;
       state.categoryFilter.isInventoryItem = action.payload.isInventoryItem;
+      state.categoryFilter.isSaleItem = action.payload.isSaleItem;
       state.categoryFilter.unit = action.payload.unit;
     },
   },

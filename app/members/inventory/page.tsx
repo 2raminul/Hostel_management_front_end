@@ -63,6 +63,7 @@ export default function Inventory() {
                 <AppButton
                     className="w-32"
                     startIcon={<RemoveCircleOutlineIcon />}
+                    variant="outlined"
                     onClick={() => setAddToInventoryOpen(true)}
                     disabled={/*
                     !!!userData?.permissions?.category?.[
@@ -74,10 +75,11 @@ export default function Inventory() {
                     Use Items
                 </AppButton>
             </div>
-            <div>
+            {!!inv.isSaleItem && <div>
                 <AppButton
                     className="w-32"
                     startIcon={<RemoveCircleOutlineIcon />}
+                    variant="outlined"
                     onClick={() => setAddToInventoryOpen(true)}
                     disabled={/*
                     !!!userData?.permissions?.category?.[
@@ -88,7 +90,7 @@ export default function Inventory() {
                 >
                     Sell Items
                 </AppButton>
-            </div>
+            </div>}
         </div>
     }));
     return <>

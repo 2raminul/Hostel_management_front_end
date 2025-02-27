@@ -4,6 +4,7 @@ export type CategoryFilterType = {
   name?: string;
   reusable?: string;
   isInventoryItem?: string;
+  isSaleItem?: string;
   unit?: string;
 };
 
@@ -14,6 +15,7 @@ export type Category = {
   name: string;
   reusable: boolean;
   isInventoryItem: boolean;
+  isSaleItem: boolean;
   unit: string;
 };
 

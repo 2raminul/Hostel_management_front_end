@@ -39,7 +39,11 @@ const headers: TableHeader[] = [
     },
     {
         label: "Inventory Item",
-        width: "20%",
+        width: "10%",
+    },
+    {
+        label: "Sale Item",
+        width: "10%",
     },
     {
         label: "Actions",
@@ -62,6 +66,7 @@ export default function Categories() {
         reusable: !!c.reusable ? BooleanType.TRUE : BooleanType.FALSE,
         unit: c.unit,
         isInventoryItem: !!c.isInventoryItem ? BooleanType.TRUE : BooleanType.FALSE,
+        isSaleItem: !!c.isSaleItem ? BooleanType.TRUE : BooleanType.FALSE,
         actions: <>
             <div className="mr-2">
                 <AppButton
@@ -81,7 +86,7 @@ export default function Categories() {
     }
     return <>
         <AppContainer pageHeader="Caterories" topPanel={<div className="border-x-2 px-5 border-gray-300">
-            <div className="grid grid-cols-1 md:grid-cols-7 gap-4 py-5">
+            <div className="grid grid-cols-1 md:grid-cols-9 gap-4 py-5">
                 <div>
                     <AppButton
                         className="w-full"

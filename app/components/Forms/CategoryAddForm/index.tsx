@@ -88,7 +88,7 @@ export const CategoryAddForm: FC<{ onSubmissionSuccess: () => void }> = ({ onSub
             <div>
                 <AppSearchableDropdown
                     labelText="Inventory Item"
-                    placeHolder="Can item be sold?"
+                    placeHolder="Is item to be delivered to clients?"
                     isRequired
                     freeSolo={false}
                     optionList={
@@ -102,6 +102,25 @@ export const CategoryAddForm: FC<{ onSubmissionSuccess: () => void }> = ({ onSub
                     }
                     field=""
                     error={errors?.isInventoryItem?.message}
+                />
+            </div>
+            <div>
+                <AppSearchableDropdown
+                    labelText="Sale Item"
+                    placeHolder="Can item be sold?"
+                    isRequired
+                    freeSolo={false}
+                    optionList={
+                        Object.values(BooleanType)
+                    }
+                    onInputChange={(value) =>
+                        setValue(
+                            "isSaleItem",
+                            BooleanType.TRUE === value
+                        )
+                    }
+                    field=""
+                    error={errors?.isSaleItem?.message}
                 />
             </div>
             <div>

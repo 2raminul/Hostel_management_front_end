@@ -8,4 +8,5 @@ export const categoryAddSchema = yup.object({
     .required(getRequiredMessage("Reusability declaration")),
   unit: yup.string().required(getRequiredMessage("Unit")),
   isInventoryItem: yup.boolean().required("Inventory item selection"),
+  isSaleItem: yup.boolean().required("Sale item selection"),
 });

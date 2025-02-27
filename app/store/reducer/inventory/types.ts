@@ -15,6 +15,7 @@ export type InventoryItemData = {
   categoryName: string;
   brand: string;
   inStockCount: number;
+  isSaleItem: boolean;
   reusableCount: number;
 };
 

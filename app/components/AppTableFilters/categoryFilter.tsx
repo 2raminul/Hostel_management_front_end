@@ -14,9 +14,10 @@ export const CategoryFilter: FC = () => {
     const [unit, setUnit] = useState('');
     const [reusable, setReusable] = useState('');
     const [isInventoryItem, setIsInventoryItem] = useState('');
+    const [isSaleItem, setIsSaleItem] = useState('');
     const { data: categoryList } = useGetCategoryListQuery({ page: 1, perPage: Number.MAX_SAFE_INTEGER });
     const applyFilter = () => {
-        dispatch(setCategoryFilter({ name, unit, reusable, isInventoryItem }));
+        dispatch(setCategoryFilter({ name, unit, reusable, isInventoryItem, isSaleItem }));
     };
     return <>
         <div className="md:border-l-2 md:border-gray grid grid-cols-1 md:grid-cols-3 md:col-span-2 gap-1">
@@ -60,7 +61,22 @@ export const CategoryFilter: FC = () => {
                     field=""
                 />
             </div>
-        </div><div className="grid grid-cols-1 md:grid-cols-2 gap-1">
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-1">
+            <div className="md:text-end my-auto text-sm">Sale Item:</div>
+            <div>
+                <AppSearchableDropdown
+                    labelText=""
+                    size="small"
+                    placeHolder="Sale Item"
+                    freeSolo={false}
+                    optionList={Object.values(BooleanType)}
+                    onInputChange={(value) => setIsSaleItem(value === BooleanType.TRUE ? 'true' : 'false')}
+                    field=""
+                />
+            </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-1">
             <div className="md:text-end my-auto text-sm">Unit:</div>
             <div>
                 <AppSearchableDropdown
