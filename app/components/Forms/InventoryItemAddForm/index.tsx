@@ -28,7 +28,7 @@ export const InventoryItemAddForm: FC<{ onSubmissionSuccess: () => void }> = ({ 
         mode: "onChange",
         resolver: yupResolver(inventoryItemAddSchema),
     });
-    const categoryValue = useWatch({ control, name: "categoryId" })
+    const categoryValue = useWatch({ control, name: "categoryId" });
     const onSubmit = async (data: any) => {
         handleAddToInventory(data)
             .unwrap()
@@ -117,7 +117,6 @@ export const InventoryItemAddForm: FC<{ onSubmissionSuccess: () => void }> = ({ 
                 >
                     {isLoading ? <AppLoader small /> : "Submit"}
                 </AppButton>
-
             </div>
         </form>
     </div>

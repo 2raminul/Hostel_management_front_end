@@ -8,7 +8,11 @@ import {
 import { getLocalhostURL } from "../../../config";
 import { getToken } from "../../../utils/helpers";
 import { CustomError } from "../../../utils/types";
-import { InventoryQueryResponseType, InventoryQueryType } from "./types";
+import {
+  InventoryItemData,
+  InventoryQueryResponseType,
+  InventoryQueryType,
+} from "./types";
 
 export const inventoryApi = createApi({
   reducerPath: "inventoryApi",
@@ -31,6 +35,30 @@ export const inventoryApi = createApi({
       }),
       invalidatesTags: ["inventory-list", "brand-list"],
     }),
+    decreaseFromInventoryDueToUsage: builder.mutation<any, any>({
+      query: (body) => ({
+        url: "/decrease-due-to-usage",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["inventory-list"],
+    }),
+    decreaseFromInventoryDueToSale: builder.mutation<any, any>({
+      query: (body) => ({
+        url: "/decrease-due-to-sale",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["inventory-list"],
+    }),
+    updateReusableCount: builder.mutation<any, any>({
+      query: (body) => ({
+        url: "/update-reusable-count",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["inventory-list"],
+    }),
     // ============== Queries ==================
     getInventoryList: builder.query<
       InventoryQueryResponseType,
@@ -42,6 +70,9 @@ export const inventoryApi = createApi({
       }),
       providesTags: ["inventory-list"],
     }),
+    getInventoryDetail: builder.query<InventoryItemData, number>({
+      query: (id) => `/detail/${id}`,
+    }),
     getBrands: builder.query<string[], void>({
       query: () => "/brands",
       providesTags: ["brand-list"],
@@ -50,6 +81,10 @@ export const inventoryApi = createApi({
 });
 export const {
   useAddToIventoryMutation,
+  useDecreaseFromInventoryDueToUsageMutation,
+  useDecreaseFromInventoryDueToSaleMutation,
+  useUpdateReusableCountMutation,
   useGetInventoryListQuery,
+  useGetInventoryDetailQuery,
   useGetBrandsQuery,
 } = inventoryApi;

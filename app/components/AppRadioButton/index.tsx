@@ -12,9 +12,8 @@ export const AppRadioButton: FC<AppRadioButtonProps> = ({
 }) => {
   return (
     <div
-      className={`rounded-lg px-4 my-2 mr-[30px] cursor-pointer ${
-        selectedValue == value ? "bg-primary-100" : "bg-gray-300"
-      }`}
+      className={`rounded-lg px-4 my-2 mr-[30px] cursor-pointer ${selectedValue == value ? "bg-gray-200" : "bg-gray-300"
+        }`}
       onClick={() => (disabled ? undefined : onSelect(value))}
     >
       <FormControlLabel

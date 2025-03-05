@@ -1,7 +1,5 @@
+import { ReusableItemStateEnum } from "@/app/schema/enum/reusableItemStateType";
 import { PaginationItemProps, PaginationProps } from "@mui/material";
-
-import { AccessLevel } from "../../schema/enum/accessLevel";
-import { AccessType } from "../../schema/enum/accessType";
 
 export type ComponentWithChildren = {
   children: React.ReactNode;
@@ -10,7 +8,7 @@ export type ComponentWithChildren = {
 export type AppRadioButtonProps = {
   onSelect: (value: string) => void;
   selectedValue: string;
-  value: AccessLevel | AccessType;
+  value: ReusableItemStateEnum;
   disabled?: boolean;
 };
 

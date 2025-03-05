@@ -17,6 +17,8 @@ export type InventoryItemData = {
   inStockCount: number;
   isSaleItem: boolean;
   reusableCount: number;
+  isReusableItem?: boolean;
+  unit: string;
 };
 
 export type InventoryQueryResponseType = {
