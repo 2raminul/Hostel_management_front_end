@@ -7,12 +7,10 @@ import {
   DialogTitle,
   Divider,
   IconButton,
-  useMediaQuery,
 } from "@mui/material";
 import { FC, ReactNode } from "react";
 
 import AppButton from "../AppButton";
-import { theme } from "../ThemeRegistry/theme";
 
 export const AppConfirmation: FC<{
   open: boolean;
@@ -24,6 +22,11 @@ export const AppConfirmation: FC<{
   handleSubmit?: () => void;
   viewOnly?: boolean;
   children?: ReactNode;
+  /**
+   * MUI Dialog `maxWidth` — default `lg` (~1200px) for consistent form modals.
+   * Use `sm` for short confirmations (e.g. delete reason only).
+   */
+  dialogMaxWidth?: "xs" | "sm" | "md" | "lg" | "xl" | false;
 }> = ({
   open,
   handleClose,
@@ -34,14 +37,31 @@ export const AppConfirmation: FC<{
   closeButtonHidden,
   children,
   viewOnly,
+  dialogMaxWidth = "lg",
 }) => {
-  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   return (
     <Dialog
-      fullScreen={fullScreen}
       open={open}
       onClose={handleClose}
-      maxWidth="xl"
+      fullWidth
+      maxWidth={dialogMaxWidth === false ? false : dialogMaxWidth}
+      scroll="paper"
+      transitionDuration={0}
+      TransitionProps={{ appear: false, timeout: 0 }}
+      BackdropProps={{
+        sx: {
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          /* Theme also sets transition: none on MuiBackdrop */
+        },
+      }}
+      PaperProps={{
+        elevation: 8,
+        sx: (theme) => ({
+          backgroundColor: theme.palette.background.paper,
+          margin: { xs: 2, sm: "auto" },
+          maxHeight: { xs: "calc(100% - 32px)", sm: "calc(100% - 64px)" },
+        }),
+      }}
     >
       <DialogTitle>{title}</DialogTitle>
       <IconButton
@@ -57,8 +77,20 @@ export const AppConfirmation: FC<{
         <CloseIcon />
       </IconButton>
       <Divider />
-      <DialogContent>
-        <DialogContentText>{children ? children : content}</DialogContentText>
+      <DialogContent
+        sx={{
+          width: "100%",
+          boxSizing: "border-box",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "stretch",
+        }}
+      >
+        {children != null ? (
+          children
+        ) : content != null ? (
+          <DialogContentText>{content}</DialogContentText>
+        ) : null}
       </DialogContent>
       <DialogActions>
         {!closeButtonHidden && (

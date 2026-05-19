@@ -78,6 +78,25 @@ export const theme = createTheme({
         },
       },
     },
+    /** Dialog-only: do not override global MuiBackdrop (breaks Menu/Popover/Select overlays). */
+    MuiDialog: {
+      defaultProps: {
+        transitionDuration: 0,
+      },
+      styleOverrides: {
+        root: {
+          "& > .MuiBackdrop-root": {
+            transition: "none !important",
+          },
+          "& .MuiFade-root": {
+            transition: "none !important",
+          },
+        },
+        paper: {
+          transition: "none !important",
+        },
+      },
+    },
   },
 });
 

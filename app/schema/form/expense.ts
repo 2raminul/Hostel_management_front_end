@@ -13,6 +13,7 @@ export const expenseAddSchema = yup.object({
   unitPrice: yup.number().required(getRequiredMessage("Unit price")),
   totalPrice: yup.number().required(),
   expenseDate: yup.date().required("Expense Date"),
+  settlementAccountId: yup.number().nullable().optional(),
 });
 
 export const expenseEditSchema = yup.object({
@@ -25,4 +26,5 @@ export const expenseEditSchema = yup.object({
   unitPrice: yup.number().required(getRequiredMessage("Unit price")),
   totalPrice: yup.number().required(),
   expenseDate: yup.date().required("Expense Date"),
+  settlementAccountId: yup.number().nullable().optional(),
 });

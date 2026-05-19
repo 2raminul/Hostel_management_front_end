@@ -8,6 +8,8 @@ import { useDispatch, useSelector } from "@/app/store/hooks";
 import { useState } from "react";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { CategoryFilter } from "@/app/components/AppTableFilters/categoryFilter";
+import { AppConfirmation } from "@/app/components/AppConfirmation";
+import { ModalFormLoadingFallback } from "@/app/components/ModalFormLoadingFallback";
 import { AppTable } from "@/app/components/AppTable";
 import dynamic from "next/dynamic";
 import { useGetCategoryListQuery } from "@/app/store/reducer/category";
@@ -154,6 +156,7 @@ export default function Categories() {
             handleClose={() => setCategoryDeletePopupOpen(false)}
             viewOnly
             closeButtonHidden
+            dialogMaxWidth="sm"
         >
             <DeleteForm
                 onFormSubmit={(reason) => deleteCategory(reason)}
@@ -164,6 +167,11 @@ export default function Categories() {
     </>
 }
 
-const AppConfirmation = dynamic(() => import("@/app/components/AppConfirmation").then((mod) => mod.AppConfirmation));
-const CategoryAddForm = dynamic(() => import("@/app/components/Forms/CategoryAddForm").then((mod) => mod.CategoryAddForm));
-const DeleteForm = dynamic(() => import("@/app/components/Forms/DeleteForm").then((mod) => mod.DeleteForm));
+const CategoryAddForm = dynamic(
+  () => import("@/app/components/Forms/CategoryAddForm").then((mod) => mod.CategoryAddForm),
+  { loading: () => <ModalFormLoadingFallback /> }
+);
+const DeleteForm = dynamic(
+  () => import("@/app/components/Forms/DeleteForm").then((mod) => mod.DeleteForm),
+  { loading: () => <ModalFormLoadingFallback /> }
+);

@@ -5,6 +5,7 @@ import { Controller, useForm } from "react-hook-form";
 import AppButton from "../../AppButton";
 import AppInputField from "../../AppInputField";
 import { deleteSchema } from "@/app/schema/delete-with-reason";
+import { MODAL_FORM_ROOT_CLASS } from "@/app/components/modalLayout";
 
 export const DeleteForm: FC<{
   onFormSubmit: (deletedReason: string) => void;
@@ -27,7 +28,7 @@ export const DeleteForm: FC<{
     onFormSubmit(data.deletedReason);
   };
   return (
-    <div className="w-96">
+    <div className={MODAL_FORM_ROOT_CLASS}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div>
           <Controller

@@ -10,6 +10,7 @@ import { Divider } from "@mui/material";
 import AppInputField from "../../AppInputField";
 import AppButton from "../../AppButton";
 import { getErrorMessage } from "@/app/utils/helpers";
+import { MODAL_FORM_ROOT_CLASS } from "@/app/components/modalLayout";
 
 export const DisburseInventoryItemForm: FC<UseInventoryItemPropsType> = ({ inventoryItemId, onSubmissionSuccess }) => {
     const snackbar = useSnackbar();
@@ -37,7 +38,7 @@ export const DisburseInventoryItemForm: FC<UseInventoryItemPropsType> = ({ inven
             })
             .catch((err) => snackbar.error(getErrorMessage(err)));
     };
-    return <div className="w-96">
+    return <div className={MODAL_FORM_ROOT_CLASS}>
         {(isDetailFetching || isDetailLoading) ? <AppLoader /> : <>
             <div>
                 Item Detail

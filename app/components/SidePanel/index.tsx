@@ -13,8 +13,7 @@ import { FC, ReactNode, useEffect, useState } from "react";
 import { MenuOption } from "./MenuOption";
 import {
   AppUserMenuOptions,
-  hasRouteAccess,
-  shouldShowMenuOption,
+  canShowNavItem,
 } from "./menuOptions";
 import { Avatar, IconButton, Tooltip } from "@mui/material";
 import { signOut } from "next-auth/react";
@@ -95,7 +94,7 @@ export const AppDrawer: FC<{ children: ReactNode }> = ({ children }) => {
         router.push("/members/initial-password-reset");
         return;
       }
-      if (hasRouteAccess(path, userData["permissions"], AppUserMenuOptions)) {
+      if (hasRouteAccess(path, userData["permissions"], AppUserMenuOptions, userData["isAdmin"])) {
         setAuthorized(true);
       } else {
         router.push("/unauthorized");
@@ -155,7 +154,12 @@ export const AppDrawer: FC<{ children: ReactNode }> = ({ children }) => {
             <Divider />
             <List>
               {AppUserMenuOptions.filter((option) =>
-                true // shouldShowMenuOption(option, userData["permissions"])
+                canShowNavItem(
+                  option,
+                  (userData as { permissions?: Record<string, { view?: boolean }> })
+                    .permissions,
+                  (userData as { isAdmin?: boolean }).isAdmin
+                )
               ).map((option) => (
                 <MenuOption
                   text={option.text}
@@ -164,7 +168,12 @@ export const AppDrawer: FC<{ children: ReactNode }> = ({ children }) => {
                   open={open}
                   key={option.text}
                   subMenu={option.subMenu?.filter((o) =>
-                    true // shouldShowMenuOption(o, userData["permissions"])
+                    canShowNavItem(
+                      o,
+                      (userData as { permissions?: Record<string, { view?: boolean }> })
+                        .permissions,
+                      (userData as { isAdmin?: boolean }).isAdmin
+                    )
                   )}
                   parentText={option.text}
                   level={0}
@@ -190,7 +199,9 @@ export const AppDrawer: FC<{ children: ReactNode }> = ({ children }) => {
                 <div className="float-left">
                   <div className="font-bold text-left">
                     <Tooltip title={(userData as any).name}>
-                      <>{trimFooterText((userData as any).name)}</>
+                      <span className="inline-block max-w-[11rem] truncate cursor-default">
+                        {trimFooterText((userData as any).name)}
+                      </span>
                     </Tooltip>
                   </div>
                 </div>

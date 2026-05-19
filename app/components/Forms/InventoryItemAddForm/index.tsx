@@ -11,6 +11,7 @@ import AppButton from "../../AppButton";
 import { AppLoader } from "../../AppLoader";
 import { useAddToIventoryMutation } from "@/app/store/reducer/inventory";
 import { getErrorMessage } from "@/app/utils/helpers";
+import { MODAL_FORM_ROOT_CLASS } from "@/app/components/modalLayout";
 
 export const InventoryItemAddForm: FC<{ onSubmissionSuccess: () => void }> = ({ onSubmissionSuccess }) => {
     const snackbar = useSnackbar();
@@ -39,7 +40,7 @@ export const InventoryItemAddForm: FC<{ onSubmissionSuccess: () => void }> = ({ 
             .catch((err) => snackbar.error(getErrorMessage(err)));
     }
 
-    return <div className="w-96">
+    return <div className={MODAL_FORM_ROOT_CLASS}>
         <form onSubmit={handleSubmit(onSubmit)}>
             <div>
                 <AppSearchableDropdown

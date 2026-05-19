@@ -10,6 +10,7 @@ import { useAddCategoryMutation, useGetUnitsQuery } from "@/app/store/reducer/ca
 import { AppLoader } from "../../AppLoader";
 import useSnackbar from "../../AppSnackbar/hooks/useSnackbar";
 import { getErrorMessage } from "@/app/utils/helpers";
+import { MODAL_FORM_ROOT_CLASS } from "@/app/components/modalLayout";
 
 export const CategoryAddForm: FC<{ onSubmissionSuccess: () => void }> = ({ onSubmissionSuccess }) => {
     const { data: unitList } = useGetUnitsQuery();
@@ -40,7 +41,7 @@ export const CategoryAddForm: FC<{ onSubmissionSuccess: () => void }> = ({ onSub
             .catch((err) => snackbar.error(getErrorMessage(err)));
     }
 
-    return <div className="w-96">
+    return <div className={MODAL_FORM_ROOT_CLASS}>
         <form onSubmit={handleSubmit(onSubmit)}>
             <div>
                 <Controller

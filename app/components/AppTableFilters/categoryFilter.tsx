@@ -19,85 +19,79 @@ export const CategoryFilter: FC = () => {
     const applyFilter = () => {
         dispatch(setCategoryFilter({ name, unit, reusable, isInventoryItem, isSaleItem }));
     };
-    return <>
-        <div className="md:border-l-2 md:border-gray grid grid-cols-1 md:grid-cols-3 md:col-span-2 gap-1">
-            <div className="md:text-end my-auto text-sm">Name:</div>
-            <div className="md:col-span-2">
-                <AppSearchableDropdown
-                    labelText=""
-                    size="small"
-                    placeHolder="Name"
-                    freeSolo={false}
-                    optionList={categoryList?.data?.map((cat) => cat.name) || []}
-                    onInputChange={(value) => setName(value || "")}
-                    field=""
-                />
+    return (
+        <div className="w-full min-w-0 md:col-span-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-4 gap-y-3">
+                <div className="min-w-0 flex flex-col gap-1">
+                    <span className="text-sm text-gray-700 shrink-0">Name</span>
+                    <AppSearchableDropdown
+                        labelText=""
+                        size="small"
+                        placeHolder="Filter by category name"
+                        freeSolo={false}
+                        optionList={categoryList?.data?.map((cat) => cat.name) || []}
+                        onInputChange={(value) => setName(value || "")}
+                        field=""
+                    />
+                </div>
+                <div className="min-w-0 flex flex-col gap-1">
+                    <span className="text-sm text-gray-700 shrink-0">Reusable</span>
+                    <AppSearchableDropdown
+                        labelText=""
+                        size="small"
+                        placeHolder="Reusable"
+                        freeSolo={false}
+                        optionList={Object.values(BooleanType)}
+                        onInputChange={(value) => setReusable(value === BooleanType.TRUE ? 'true' : 'false')}
+                        field=""
+                    />
+                </div>
+                <div className="min-w-0 flex flex-col gap-1">
+                    <span className="text-sm text-gray-700 shrink-0">Inventory item</span>
+                    <AppSearchableDropdown
+                        labelText=""
+                        size="small"
+                        placeHolder="Inventory item"
+                        freeSolo={false}
+                        optionList={Object.values(BooleanType)}
+                        onInputChange={(value) => setIsInventoryItem(value === BooleanType.TRUE ? 'true' : 'false')}
+                        field=""
+                    />
+                </div>
+                <div className="min-w-0 flex flex-col gap-1">
+                    <span className="text-sm text-gray-700 shrink-0">Sale item</span>
+                    <AppSearchableDropdown
+                        labelText=""
+                        size="small"
+                        placeHolder="Sale item"
+                        freeSolo={false}
+                        optionList={Object.values(BooleanType)}
+                        onInputChange={(value) => setIsSaleItem(value === BooleanType.TRUE ? 'true' : 'false')}
+                        field=""
+                    />
+                </div>
+                <div className="min-w-0 flex flex-col gap-1">
+                    <span className="text-sm text-gray-700 shrink-0">Unit</span>
+                    <AppSearchableDropdown
+                        labelText=""
+                        size="small"
+                        placeHolder="Kg / Pcs / Dozen"
+                        freeSolo={false}
+                        optionList={unitList || []}
+                        onInputChange={(value) => setUnit(value || "")}
+                        field=""
+                    />
+                </div>
+            </div>
+            <div className="mt-4">
+                <AppButton
+                    className="md:w-24 w-full"
+                    startIcon={<TuneIcon />}
+                    onClick={applyFilter}
+                >
+                    <div className="flex px-1 items-center text-sm">Filter</div>
+                </AppButton>
             </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-1">
-            <div className="md:text-end my-auto text-sm">Reusable:</div>
-            <div>
-                <AppSearchableDropdown
-                    labelText=""
-                    size="small"
-                    placeHolder="Reusable"
-                    freeSolo={false}
-                    optionList={Object.values(BooleanType)}
-                    onInputChange={(value) => setReusable(value === BooleanType.TRUE ? 'true' : 'false')}
-                    field=""
-                />
-            </div>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-1">
-            <div className="md:text-end my-auto text-sm">Inventory Item:</div>
-            <div>
-                <AppSearchableDropdown
-                    labelText=""
-                    size="small"
-                    placeHolder="Inventory Item"
-                    freeSolo={false}
-                    optionList={Object.values(BooleanType)}
-                    onInputChange={(value) => setIsInventoryItem(value === BooleanType.TRUE ? 'true' : 'false')}
-                    field=""
-                />
-            </div>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-1">
-            <div className="md:text-end my-auto text-sm">Sale Item:</div>
-            <div>
-                <AppSearchableDropdown
-                    labelText=""
-                    size="small"
-                    placeHolder="Sale Item"
-                    freeSolo={false}
-                    optionList={Object.values(BooleanType)}
-                    onInputChange={(value) => setIsSaleItem(value === BooleanType.TRUE ? 'true' : 'false')}
-                    field=""
-                />
-            </div>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-1">
-            <div className="md:text-end my-auto text-sm">Unit:</div>
-            <div>
-                <AppSearchableDropdown
-                    labelText=""
-                    size="small"
-                    placeHolder="Kg/Pcs/Dozen"
-                    freeSolo={false}
-                    optionList={unitList || []}
-                    onInputChange={(value) => setUnit(value || "")}
-                    field=""
-                />
-            </div>
-        </div>
-        <div>
-            <AppButton
-                className="md:w-24 w-full"
-                startIcon={<TuneIcon />}
-                onClick={applyFilter}
-            >
-                <div className="flex px-1 items-center text-sm">Filter</div>
-            </AppButton>
-        </div>
-    </>
-}
+    );
+};

@@ -8,6 +8,7 @@ export type AddExpensePropsType = {
   unitPrice: number;
   totalPrice: number;
   expenseDate: Date;
+  settlementAccountId?: number | null;
 };
 
 export type EditExpensePropsType = {
@@ -18,6 +19,7 @@ export type EditExpensePropsType = {
   unitPrice: number;
   totalPrice: number;
   expenseDate: Date;
+  settlementAccountId?: number | null;
 };
 
 export type ExpenseFilterType = {
@@ -38,6 +40,9 @@ export type Expense = {
   totalPrice: number;
   expenseDate: Date;
   remarks?: string;
+  settlementAccount?: string | null;
+  settlementAccountId?: number | null;
+  settlementAccountName?: string | null;
 };
 export type ExpenseHistoryType = {
   id: number;

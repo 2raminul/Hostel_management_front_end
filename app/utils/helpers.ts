@@ -21,7 +21,15 @@ export const maskUUID = (uuid: string) => {
   return `${start}${masked}${end}`;
 };
 
-export const getDecodedTokenData = async () => {
+export const getDecodedTokenData = async (): Promise<{
+  userId?: number;
+  name?: string;
+  email?: string;
+  isAdmin?: boolean;
+  permissions?: Record<string, { view?: boolean; edit?: boolean; delete?: boolean }>;
+}> => {
   const session = await getSession();
-  return jwtDecode((session as any).accessToken);
+  const token = (session as any)?.accessToken;
+  if (!token || typeof token !== "string") return {};
+  return jwtDecode(token);
 };

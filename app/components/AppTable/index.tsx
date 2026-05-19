@@ -35,7 +35,7 @@ export const AppTable: FC<{
               backgroundColor: "transparent", // Background of the scrollbar track
             },
             scrollbarWidth: "thin", // Firefox: make scrollbar thin
-            "-ms-overflow-style": "auto",
+            msOverflowStyle: "auto", // IE / legacy Edge (-ms-overflow-style)
           }}
         >
           <Table

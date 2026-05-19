@@ -3,6 +3,12 @@ import CategoryIcon from '@mui/icons-material/Category';
 import PaidIcon from '@mui/icons-material/Paid';
 import EuroIcon from '@mui/icons-material/Euro';
 import InventoryIcon from '@mui/icons-material/Inventory';
+import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
+import SettingsIcon from '@mui/icons-material/Settings';
+import PeopleIcon from '@mui/icons-material/People';
+import AssessmentIcon from '@mui/icons-material/Assessment';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import SecurityIcon from '@mui/icons-material/Security';
 import { ReactNode } from "react";
 import { iconStyles } from "../ThemeRegistry/theme";
 import { ActionType } from "../types";
@@ -13,6 +19,8 @@ export type MenuOptionType = {
   icon: ReactNode;
   subMenu?: MenuOptionType[];
   permission: Record<string, ActionType>;
+  /** If true, only users with isAdmin in JWT see this item */
+  adminOnly?: boolean;
 };
 export type MenuOptionProps = {
   text: string;
@@ -48,7 +56,7 @@ export const AppUserMenuOptions: MenuOptionType[] = [
     link: "/members/expenses",
     icon: <EuroIcon sx={{ ...iconStyles }} />,
     permission: {
-      expense: { view: true },
+      expenses: { view: true },
     },
   },
   {
@@ -56,7 +64,7 @@ export const AppUserMenuOptions: MenuOptionType[] = [
     link: "/members/inventory",
     icon: <InventoryIcon sx={{ ...iconStyles }} />,
     permission: {
-      expense: { view: true },
+      inventory: { view: true },
     },
   },
   {
@@ -66,6 +74,55 @@ export const AppUserMenuOptions: MenuOptionType[] = [
     permission: {
       income: { view: true },
     },
+  },
+  {
+    text: "Rooms",
+    link: "/members/rooms",
+    icon: <MeetingRoomIcon sx={{ ...iconStyles }} />,
+    permission: {
+      rooms: { view: true },
+    },
+  },
+  {
+    text: "Settings",
+    link: "/members/settings",
+    icon: <SettingsIcon sx={{ ...iconStyles }} />,
+    permission: {
+      settings: { view: true },
+    },
+  },
+  {
+    text: "Users",
+    link: "/members/users",
+    icon: <PeopleIcon sx={{ ...iconStyles }} />,
+    permission: {
+      users: { view: true },
+    },
+  },
+  {
+    text: "Reports",
+    link: "/members/reports",
+    icon: <AssessmentIcon sx={{ ...iconStyles }} />,
+    permission: {
+      reports: { view: true },
+    },
+  },
+  {
+    text: "Cash position",
+    link: "/members/cash-position",
+    icon: <AccountBalanceWalletIcon sx={{ ...iconStyles }} />,
+    permission: {
+      reports: { view: true },
+    },
+  },
+  {
+    text: "User access",
+    link: "/members/user-access",
+    icon: <SecurityIcon sx={{ ...iconStyles }} />,
+    permission: {
+      users: { view: true },
+    },
+    adminOnly: true,
   },
 ];
 
@@ -81,23 +138,31 @@ export const shouldShowMenuOption = (
     userPermission[permissionName][actionName as keyof ActionType]
   );
 };
+
+/** JWT permissions use view/edit/delete; menu uses view for nav. */
+export const canShowNavItem = (
+  option: MenuOptionType,
+  userPermission: Record<string, ActionType> | undefined,
+  isAdmin?: boolean
+) => {
+  if (option.adminOnly) return !!isAdmin;
+  if (!userPermission || !Object.keys(userPermission).length) return false;
+  return shouldShowMenuOption(option, userPermission);
+};
 export const hasRouteAccess = (
   path: string,
   userPermission: Record<string, ActionType>,
-  menuOptions: MenuOptionType[]
+  menuOptions: MenuOptionType[],
+  isAdmin?: boolean
 ): boolean => {
-  for (let menuOption of menuOptions) {
+  for (const menuOption of menuOptions) {
     if (menuOption.link === path) {
-      return shouldShowMenuOption(menuOption, userPermission);
+      return canShowNavItem(menuOption, userPermission, isAdmin);
     }
-    // Recursively check subMenu if it exists
     if (menuOption.subMenu) {
-      const subMenuHasAccess = hasRouteAccess(
-        path,
-        userPermission,
-        menuOption.subMenu
-      );
-      if (subMenuHasAccess) {
+      if (
+        hasRouteAccess(path, userPermission, menuOption.subMenu, isAdmin)
+      ) {
         return true;
       }
     }

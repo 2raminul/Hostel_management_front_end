@@ -6,6 +6,7 @@ import { expenseAddSchema } from "@/app/schema/form/expense";
 import { AppSearchableDropdown } from "../../AppSearchableDropdown";
 import { useGetCategoryListQuery } from "@/app/store/reducer/category";
 import { useAddExpenseMutation } from "@/app/store/reducer/expense";
+import { useGetSettlementAccountsQuery } from "@/app/store/reducer/settings";
 import { useGetBrandsQuery } from "@/app/store/reducer/inventory";
 import AppInputField from "../../AppInputField";
 import { AppOptionLabel } from "../../AppOptionLabel";
@@ -13,12 +14,15 @@ import { AppDatePicker } from "../../AppDatePicker";
 import AppButton from "../../AppButton";
 import { AppLoader } from "../../AppLoader";
 import { getErrorMessage } from "@/app/utils/helpers";
+import { MODAL_FORM_ROOT_CLASS } from "@/app/components/modalLayout";
 
 export const ExpenseAddForm: FC<{ onSubmissionSuccess: () => void }> = ({ onSubmissionSuccess }) => {
     const snackbar = useSnackbar();
     const { data: categoryList } = useGetCategoryListQuery({ page: 1, perPage: Number.MAX_SAFE_INTEGER });
     const { data: brandList } = useGetBrandsQuery();
+    const { data: settlementAccounts } = useGetSettlementAccountsQuery();
     const [handleAddExpense, { isLoading }] = useAddExpenseMutation();
+    const settlementNone = "— None —";
     const {
         control,
         handleSubmit,
@@ -38,7 +42,14 @@ export const ExpenseAddForm: FC<{ onSubmissionSuccess: () => void }> = ({ onSubm
     const unitPriceVal = useWatch({ control, name: "unitPrice" });
     const expenseDateVal = useWatch({ control, name: "expenseDate" });
     const onSubmit = async (data: any) => {
-        handleAddExpense(data)
+        const payload = { ...data };
+        if (
+            payload.settlementAccountId == null ||
+            payload.settlementAccountId === 0
+        ) {
+            delete payload.settlementAccountId;
+        }
+        handleAddExpense(payload)
             .unwrap()
             .then(() => {
                 snackbar.success("Expense added successfully.");
@@ -53,7 +64,7 @@ export const ExpenseAddForm: FC<{ onSubmissionSuccess: () => void }> = ({ onSubm
         }
     }, [quantityVal, unitPriceVal])
 
-    return <div className="w-96">
+    return <div className={MODAL_FORM_ROOT_CLASS}>
         NOTE: Adding a new expense will add the bought items in inventory
         <form onSubmit={handleSubmit(onSubmit)}>
             <div>
@@ -72,6 +83,28 @@ export const ExpenseAddForm: FC<{ onSubmissionSuccess: () => void }> = ({ onSubm
                     }
                     field=""
                     error={errors?.categoryId?.message}
+                />
+            </div>
+            <div>
+                <AppSearchableDropdown
+                    labelText="Settlement account"
+                    placeHolder="Optional — paid from"
+                    freeSolo={false}
+                    size="small"
+                    optionList={
+                        settlementAccounts?.length
+                            ? [settlementNone, ...settlementAccounts.map((s) => s.name)]
+                            : [settlementNone]
+                    }
+                    onInputChange={(value) => {
+                        if (!value || value === settlementNone) {
+                            setValue("settlementAccountId", undefined);
+                            return;
+                        }
+                        const acc = settlementAccounts?.find((s) => s.name === value);
+                        setValue("settlementAccountId", acc?.id ?? undefined);
+                    }}
+                    field=""
                 />
             </div>
             <div>

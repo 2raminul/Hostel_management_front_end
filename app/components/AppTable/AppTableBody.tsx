@@ -32,13 +32,11 @@ export const AppTableBody: FC<{
                 },
               }}
             >
-              {Object.keys(row).map((objKey) => (
-                <>
-                  {objKey !== "deleted" && (
-                    <AppTableCell key={objKey}>{row[objKey]}</AppTableCell>
-                  )}
-                </>
-              ))}
+              {Object.keys(row)
+                .filter((objKey) => objKey !== "deleted")
+                .map((objKey) => (
+                  <AppTableCell key={objKey}>{row[objKey]}</AppTableCell>
+                ))}
             </TableRow>
           ))
         ) : (

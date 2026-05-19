@@ -65,6 +65,19 @@ export const expenseApi = createApi({
       query: (id) => `/${id}`,
       providesTags: ["expense-detail"],
     }),
+    getExpenseSummary: builder.query<
+      { totalAmount: number; entryCount: number },
+      { dateFrom?: string; dateTo?: string; categoryId?: number }
+    >({
+      query: (params) => ({
+        url: "/summary",
+        params: {
+          dateFrom: params.dateFrom,
+          dateTo: params.dateTo,
+          ...(params.categoryId != null ? { categoryId: params.categoryId } : {}),
+        },
+      }),
+    }),
   }),
 });
 export const {
@@ -73,4 +86,5 @@ export const {
   useGetExpenseHistoryQuery,
   useEditExpenseMutation,
   useAddExpenseMutation,
+  useGetExpenseSummaryQuery,
 } = expenseApi;

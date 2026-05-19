@@ -8,6 +8,8 @@ import { AppPerPage } from "@/app/components/AppPerPage";
 import { AppTable } from "@/app/components/AppTable";
 import { ExpenseFilter } from "@/app/components/AppTableFilters/expenseFilter";
 import { AppTableFooter } from "@/app/components/AppTableFooter";
+import { AppConfirmation } from "@/app/components/AppConfirmation";
+import { ModalFormLoadingFallback } from "@/app/components/ModalFormLoadingFallback";
 import { TableHeader } from "@/app/components/types";
 import { useDispatch, useSelector } from "@/app/store/hooks";
 import { setExpensePage, setExpensePerPage, useGetExpenseListQuery } from "@/app/store/reducer/expense";
@@ -20,38 +22,15 @@ import EditNoteIcon from '@mui/icons-material/EditNote';
 import HistoryIcon from '@mui/icons-material/History';
 
 const headers: TableHeader[] = [
-    {
-        label: "ID",
-        width: "10%",
-    },
-    {
-        label: "Category",
-        width: "10%",
-    },
-    {
-        label: "Brand",
-        width: "10%",
-    },
-    {
-        label: "Quantity",
-        width: "10%",
-    },
-    {
-        label: "Unit Price",
-        width: "10%",
-    },
-    {
-        label: "Total Price",
-        width: "10%",
-    },
-    {
-        label: "Expense Date",
-        width: "10%",
-    },
-    {
-        label: "Actions",
-        width: "30%",
-    },
+    { label: "ID", width: "8%" },
+    { label: "Category", width: "9%" },
+    { label: "Settlement", width: "10%" },
+    { label: "Brand", width: "8%" },
+    { label: "Quantity", width: "8%" },
+    { label: "Unit Price", width: "9%" },
+    { label: "Total Price", width: "9%" },
+    { label: "Expense Date", width: "9%" },
+    { label: "Actions", width: "22%" },
 ];
 
 
@@ -74,6 +53,7 @@ export default function Expenses() {
     const getTableData = (data: Expense[]) => data.map((ed) => Object.assign({
         id: ed.id,
         category: ed.categoryName,
+        settlement: ed.settlementAccount || "—",
         brand: ed.brand,
         quantity: ed.quantity,
         unitPrice: ed.unitPrice,
@@ -182,13 +162,22 @@ export default function Expenses() {
             handleClose={() => setHistoryExpensePopupOpen(false)}
             viewOnly
             closeButtonHidden
+            dialogMaxWidth="xl"
         >
             {idInAction && <ExpenseHistory expenseId={idInAction} />}
         </AppConfirmation>
     </>
 }
 
-const AppConfirmation = dynamic(() => import("@/app/components/AppConfirmation").then((mod) => mod.AppConfirmation));
-const ExpenseAddForm = dynamic(() => import("@/app/components/Forms/ExpenseAddForm").then((mod) => mod.ExpenseAddForm));
-const ExpenseEditForm = dynamic(() => import("@/app/components/Forms/ExpenseEditForm").then((mod) => mod.ExpenseEditForm));
-const ExpenseHistory = dynamic(() => import("@/app/components/ExpenseHistory").then((mod) => mod.ExpenseHistory));
+const ExpenseAddForm = dynamic(
+  () => import("@/app/components/Forms/ExpenseAddForm").then((mod) => mod.ExpenseAddForm),
+  { loading: () => <ModalFormLoadingFallback /> }
+);
+const ExpenseEditForm = dynamic(
+  () => import("@/app/components/Forms/ExpenseEditForm").then((mod) => mod.ExpenseEditForm),
+  { loading: () => <ModalFormLoadingFallback /> }
+);
+const ExpenseHistory = dynamic(
+  () => import("@/app/components/ExpenseHistory").then((mod) => mod.ExpenseHistory),
+  { loading: () => <ModalFormLoadingFallback /> }
+);

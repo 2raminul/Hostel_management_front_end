@@ -1,5 +1,7 @@
 "use client";
 
+import { AppConfirmation } from "@/app/components/AppConfirmation";
+import { ModalFormLoadingFallback } from "@/app/components/ModalFormLoadingFallback";
 import AppButton from "@/app/components/AppButton";
 import { AppContainer } from "@/app/components/AppContainer";
 import { AppDataCount } from "@/app/components/AppDataCount";
@@ -203,8 +205,25 @@ export default function Inventory() {
     </>
 }
 
-const AppConfirmation = dynamic(() => import("@/app/components/AppConfirmation").then((mod) => mod.AppConfirmation));
-const InventoryItemAddForm = dynamic(() => import("@/app/components/Forms/InventoryItemAddForm").then((mod) => mod.InventoryItemAddForm));
-const DisburseInventoryItemForm = dynamic(() => import("@/app/components/Forms/DisburseInventoryItemForm").then((mod) => mod.DisburseInventoryItemForm));
-const SellInventoryItemForm = dynamic(() => import("@/app/components/Forms/SellInventoryItemForm").then((mod) => mod.SellInventoryItemForm));
-const ReuseInventoryItemForm = dynamic(() => import("@/app/components/Forms/ReuseInventoryItemForm").then((mod) => mod.ReuseInventoryItemForm));
+const InventoryItemAddForm = dynamic(
+  () =>
+    import("@/app/components/Forms/InventoryItemAddForm").then((mod) => mod.InventoryItemAddForm),
+  { loading: () => <ModalFormLoadingFallback /> }
+);
+const DisburseInventoryItemForm = dynamic(
+  () =>
+    import("@/app/components/Forms/DisburseInventoryItemForm").then(
+      (mod) => mod.DisburseInventoryItemForm
+    ),
+  { loading: () => <ModalFormLoadingFallback /> }
+);
+const SellInventoryItemForm = dynamic(
+  () =>
+    import("@/app/components/Forms/SellInventoryItemForm").then((mod) => mod.SellInventoryItemForm),
+  { loading: () => <ModalFormLoadingFallback /> }
+);
+const ReuseInventoryItemForm = dynamic(
+  () =>
+    import("@/app/components/Forms/ReuseInventoryItemForm").then((mod) => mod.ReuseInventoryItemForm),
+  { loading: () => <ModalFormLoadingFallback /> }
+);

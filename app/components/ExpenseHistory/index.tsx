@@ -5,6 +5,7 @@ import { AppTable } from "../AppTable";
 import { AppLoader } from "../AppLoader";
 import { formatDate, formatDateTime } from "@/app/utils/date";
 import { ExpenseHistoryType } from "@/app/store/reducer/expense/types";
+import { MODAL_FORM_ROOT_CLASS } from "@/app/components/modalLayout";
 
 const headers: TableHeader[] = [
     {
@@ -65,13 +66,19 @@ export const ExpenseHistory: FC<{ expenseId: number; }> = ({ expenseId }) => {
         version: formatDateTime(ed.version)
     }))
 
-    return <>
-        {(isLoading || isFetching) ? <AppLoader /> : <AppTable
-            headers={headers}
-            isDataLoading={isLoading || isFetching}
-            isSuccess={isSuccess}
-            isError={isError}
-            data={getTableData(data?.data || [])}
-        />}
-    </>
+    return (
+        <div className={MODAL_FORM_ROOT_CLASS}>
+            {(isLoading || isFetching) ? (
+                <AppLoader />
+            ) : (
+                <AppTable
+                    headers={headers}
+                    isDataLoading={isLoading || isFetching}
+                    isSuccess={isSuccess}
+                    isError={isError}
+                    data={getTableData(data?.data || [])}
+                />
+            )}
+        </div>
+    );
 }

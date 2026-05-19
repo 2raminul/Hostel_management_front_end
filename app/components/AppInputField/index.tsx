@@ -33,6 +33,13 @@ const AppInputField = forwardRef(
     ref
   ) => {
     const id = useId();
+    const restRecord = rest as Record<string, unknown>;
+    const textFieldProps = { ...rest };
+    if (Object.prototype.hasOwnProperty.call(restRecord, "value")) {
+      const v = restRecord.value;
+      (textFieldProps as { value?: unknown }).value =
+        v === undefined || v === null ? "" : v;
+    }
     return (
       <>
         {labelText && (
@@ -80,7 +87,7 @@ const AppInputField = forwardRef(
             }}
             {...(className && { className: className })}
             {...(select && { select: true })}
-            {...rest}
+            {...textFieldProps}
           />
         </div>
         {errorText && (

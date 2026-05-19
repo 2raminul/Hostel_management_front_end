@@ -24,8 +24,8 @@ export default function Login() {
     clearErrors,
   } = useForm({
     defaultValues: {
-      email: undefined,
-      password: undefined,
+      email: "",
+      password: "",
     },
     mode: "onChange",
     resolver: yupResolver(loginSchema),
@@ -84,7 +84,6 @@ export default function Login() {
                     labelText="Password"
                     type="password"
                     placeholder=""
-                    defaultValue=""
                     error={!!errors?.password?.message}
                     errorText={errors?.password?.message}
                     {...field}

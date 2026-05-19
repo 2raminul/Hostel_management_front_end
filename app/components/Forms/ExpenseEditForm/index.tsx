@@ -5,13 +5,16 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { expenseEditSchema } from "@/app/schema/form/expense";
 import { AppSearchableDropdown } from "../../AppSearchableDropdown";
 import { useGetCategoryListQuery } from "@/app/store/reducer/category";
-import { useEditExpenseMutation, useGetBrandsQuery, useGetExpenseDetailQuery } from "@/app/store/reducer/expense";
+import { useEditExpenseMutation, useGetExpenseDetailQuery } from "@/app/store/reducer/expense";
+import { useGetBrandsQuery } from "@/app/store/reducer/inventory";
+import { useGetSettlementAccountsQuery } from "@/app/store/reducer/settings";
 import AppInputField from "../../AppInputField";
 import { AppOptionLabel } from "../../AppOptionLabel";
 import { AppDatePicker } from "../../AppDatePicker";
 import AppButton from "../../AppButton";
 import { AppLoader } from "../../AppLoader";
 import { getErrorMessage } from "@/app/utils/helpers";
+import { MODAL_FORM_ROOT_CLASS } from "@/app/components/modalLayout";
 
 export const ExpenseEditForm: FC<{ expenseId: number; onSubmissionSuccess: () => void }> = ({ expenseId, onSubmissionSuccess }) => {
     const snackbar = useSnackbar();
@@ -19,6 +22,8 @@ export const ExpenseEditForm: FC<{ expenseId: number; onSubmissionSuccess: () =>
     const { data: brandList } = useGetBrandsQuery();
     const { data: expenseDetail, isLoading: isDetailLoading, isFetching: isDetailFetching, isError: isDetailError, isSuccess: isDetailSuccess } = useGetExpenseDetailQuery(expenseId, { refetchOnMountOrArgChange: true });
     const [handleEditExpense, { isLoading }] = useEditExpenseMutation();
+    const { data: settlementAccounts } = useGetSettlementAccountsQuery();
+    const settlementNone = "— None —";
     const [formPopulated, setFormPopulated] = useState(false);
     const {
         control,
@@ -40,6 +45,12 @@ export const ExpenseEditForm: FC<{ expenseId: number; onSubmissionSuccess: () =>
     const expenseDateVal = useWatch({ control, name: "expenseDate" });
     const onSubmit = async (data: any) => {
         data.id = expenseId;
+        if (
+            data.settlementAccountId == null ||
+            data.settlementAccountId === 0
+        ) {
+            data.settlementAccountId = null;
+        }
         handleEditExpense(data)
             .unwrap()
             .then(() => {
@@ -63,16 +74,40 @@ export const ExpenseEditForm: FC<{ expenseId: number; onSubmissionSuccess: () =>
             setValue('unitPrice', expenseDetail.unitPrice);
             setValue('totalPrice', expenseDetail.totalPrice);
             setValue('expenseDate', new Date(expenseDetail.expenseDate));
+            setValue('settlementAccountId', expenseDetail.settlementAccountId ?? null);
             setFormPopulated(true);
         }
-    }, [isDetailLoading, isDetailFetching, isDetailSuccess])
+    }, [isDetailLoading, isDetailFetching, isDetailSuccess, expenseDetail, setValue])
 
-    return <div className="w-96">
+    return <div className={MODAL_FORM_ROOT_CLASS}>
         NOTE: Please do not forget to update the inventory if you are changing the quantity field.
         {formPopulated ? <form onSubmit={handleSubmit(onSubmit)}>
             <div>
                 <AppOptionLabel text="Category" />
                 {expenseDetail?.categoryName}
+            </div>
+            <div>
+                <AppSearchableDropdown
+                    labelText="Settlement account"
+                    placeHolder="Optional"
+                    freeSolo={false}
+                    size="small"
+                    optionList={
+                        settlementAccounts?.length
+                            ? [settlementNone, ...settlementAccounts.map((s) => s.name)]
+                            : [settlementNone]
+                    }
+                    previousValue={expenseDetail?.settlementAccountName || settlementNone}
+                    onInputChange={(value) => {
+                        if (!value || value === settlementNone) {
+                            setValue("settlementAccountId", null);
+                            return;
+                        }
+                        const acc = settlementAccounts?.find((s) => s.name === value);
+                        setValue("settlementAccountId", acc?.id ?? null);
+                    }}
+                    field=""
+                />
             </div>
             <div>
                 <AppSearchableDropdown

@@ -13,6 +13,7 @@ import { getErrorMessage } from "@/app/utils/helpers";
 import { AppRadioButton } from "../../AppRadioButton";
 import { AppOptionLabel } from "../../AppOptionLabel";
 import { ReusableItemStateEnum } from "@/app/schema/enum/reusableItemStateType";
+import { MODAL_FORM_ROOT_CLASS } from "@/app/components/modalLayout";
 
 export const ReuseInventoryItemForm: FC<ReuseInventoryItemProps> = ({ inventoryItemId, onSubmissionSuccess }) => {
     const snackbar = useSnackbar();
@@ -41,7 +42,7 @@ export const ReuseInventoryItemForm: FC<ReuseInventoryItemProps> = ({ inventoryI
             })
             .catch((err) => snackbar.error(getErrorMessage(err)));
     }
-    return <div>
+    return <div className={MODAL_FORM_ROOT_CLASS}>
         {(isDetailFetching || isDetailLoading) ? <AppLoader /> : <>
             <div>
                 Item Detail

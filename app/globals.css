@@ -2,10 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Reserve scrollbar space so opening MUI dialogs does not shift layout (was fighting body overflow rules). */
+html {
+  scrollbar-gutter: stable;
+}
+
 @media (min-height: 769px) {
   body {
-    overflow: hidden; /* Disable scrolling */
-    margin: 0; /* Remove margin to avoid scroll from the body */
+    margin: 0;
+    overflow-x: hidden;
+    /* Do not force overflow-y: hidden here — it conflicted with MUI Modal scroll lock and caused white flashes / jumps. */
   }
 }
 @media (max-height: 768px) {

@@ -10,6 +10,7 @@ import { AppLoader } from "../../AppLoader";
 import AppInputField from "../../AppInputField";
 import AppButton from "../../AppButton";
 import { getErrorMessage } from "@/app/utils/helpers";
+import { MODAL_FORM_ROOT_CLASS } from "@/app/components/modalLayout";
 
 export const SellInventoryItemForm: FC<SellInventoryItemProps> = ({ inventoryItemId, onSubmissionSuccess }) => {
     const snackbar = useSnackbar();
@@ -38,7 +39,7 @@ export const SellInventoryItemForm: FC<SellInventoryItemProps> = ({ inventoryIte
             })
             .catch((err) => snackbar.error(getErrorMessage(err)));
     }
-    return <div className="w-96">
+    return <div className={MODAL_FORM_ROOT_CLASS}>
         {(isDetailFetching || isDetailLoading) ? <AppLoader /> : <>
             <div>
                 Item Detail
